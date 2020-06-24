@@ -1,0 +1,20 @@
+/* ==UserStyle==
+@name         Make Github UX usable agagin
+@namespace    github.com/lgg/make-github-usable-again
+@version      1.0.0
+@license      MIT
+@preprocessor default
+@var color link-color "Link Color" red
+==/UserStyle== */
+
+/*@-moz-document domain("example.com") {*/
+/*    a {*/
+/*        color: var(--link-color);*/
+/*    }*/
+/*}*/
+
+@-moz-document domain("github.com") {
+    .repository-content div:nth-child(2){
+
+    }
+}
