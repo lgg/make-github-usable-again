@@ -119,6 +119,8 @@
 
         // @TODO: fix about block (beautify)
 
+        // @TODO: fix last commit date (make it more visible)
+
         //##############################################################################################
         // check if we have languages block
         const languagesBlock = dom.getLastChild(repoHeaderInnerWrap);
