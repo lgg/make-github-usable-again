@@ -137,25 +137,45 @@
         // fix about block
         const aboutBlock = repoHeader.getElementsByClassName('BorderGrid-row')[0];
         dom.removeClass(aboutBlock, 'BorderGrid-row hide-sm hide-md');
-        dom.addClass(aboutBlock, 'col-md-12');
+        dom.addClass(aboutBlock, 'col-md-12 mb-3');
         const aboutBlockInner = aboutBlock.children[0];
+        dom.removeClass(aboutBlockInner, 'BorderGrid-cell');
+        dom.addClass(aboutBlockInner, 'col-md-12');
+        github.hideTitleBlock(aboutBlockInner);
 
-        let lastChild = dom.getLastChild(aboutBlockInner);
-        let leftLastChild = lastChild.previousElementSibling;
+
+        // @TODO: fix about block (beautify)
+
+        // if we have external repo link - move it to about text block as inline-child
+        const aboutBlockExternalLinks = aboutBlock.querySelectorAll('.d-flex');
+        if (aboutBlockExternalLinks.length > 0) {
+            const aboutBlockExternalLink = aboutBlockExternalLinks[0];
+            const aboutTextBlock = aboutBlockExternalLink.previousElementSibling;
+
+            let inlineAboutBlockExternalLink = document.createElement('span');
+            inlineAboutBlockExternalLink.innerHTML = aboutBlockExternalLink.innerHTML;
+
+            dom.removeElement(aboutBlockExternalLink);
+            aboutTextBlock.appendChild(inlineAboutBlockExternalLink);
+            dom.addStyle(inlineAboutBlockExternalLink, 'margin-left: 10px;');
+        }
+
+        let aboutBlockLastChild = dom.getLastChild(aboutBlockInner);
+        let aboutBlockLeftLastChild = aboutBlockLastChild.previousElementSibling;
         let licenseBlock = false;
 
-        if (leftLastChild.textContent === 'License') {
-            licenseBlock = lastChild.children[0].cloneNode(true);
-            dom.removeElement(lastChild);
-            dom.removeElement(leftLastChild);
+        if (aboutBlockLeftLastChild.textContent === 'License') {
+            licenseBlock = aboutBlockLastChild.children[0].cloneNode(true);
+            dom.removeElement(aboutBlockLastChild);
+            dom.removeElement(aboutBlockLeftLastChild);
         }
 
         // if we have "Readme" link - delete it
-        lastChild = dom.getLastChild(aboutBlockInner);
-        leftLastChild = lastChild.previousElementSibling;
-        if (leftLastChild.textContent === 'Resources') {
-            dom.removeElement(lastChild);
-            dom.removeElement(leftLastChild);
+        aboutBlockLastChild = dom.getLastChild(aboutBlockInner);
+        aboutBlockLeftLastChild = aboutBlockLastChild.previousElementSibling;
+        if (aboutBlockLeftLastChild.textContent === 'Resources') {
+            dom.removeElement(aboutBlockLastChild);
+            dom.removeElement(aboutBlockLeftLastChild);
         }
 
         // if we have License detail move it to header of the repo details
@@ -168,26 +188,49 @@
             repoDetailsHeaderList.appendChild(item);
         }
 
-        // @TODO: move Packages and Releases block between branch and btns
+        // get remaining rest header blocks
+        const remainingHeaderBlocks = repoHeader.getElementsByClassName('BorderGrid-row');
+        for (let j = 0; j < remainingHeaderBlocks.length; j++) {
+            let currentBlockName = github.getHeaderBlockTitle(remainingHeaderBlocks[j]);
+            if (currentBlockName) {
+                const currentBlock = remainingHeaderBlocks[j];
 
-        // @TODO: contributors and Used by in one row
 
-        // @TODO: Sponsor block in one row
+                // @TODO: contributors and Used by in one row
 
-        // @TODO: fix about block (beautify)
+                // @TODO: Sponsor block in one row
+                switch (currentBlockName) {
+                    // @TODO: move Packages and Releases block between branch and btns
+                    case 'Releases':
+                        break;
+                    case 'Packages':
+                        break;
+                    case 'Sponsor this project':
+                        break;
+                    case 'Used by':
+                        break;
+                    case 'Contributors':
+                        break;
+                    case 'Languages':
+                        const languageBlock = currentBlock;
+
+                        if (languageBlock.querySelectorAll('.Progress').length > 0) {
+                            dom.addClass(languageBlock, 'col-md-12');
+                            dom.removeClass(languageBlock, 'BorderGrid-row');
+
+                            dom.addClass(languageBlock.children[0], 'col-md-12');
+                            dom.removeClass(languageBlock.children[0], 'BorderGrid-cell');
+
+                            github.hideTitleBlock(languageBlock);
+                        }
+                        break;
+                }
+            }
+        }
 
         // @TODO: fix last commit date (make it more visible)
 
         //##############################################################################################
-        // check if we have languages block
-        const languagesBlock = dom.getLastChild(repoHeaderInnerWrap);
-        if (languagesBlock.children[0].children[1].children[0].classList.contains('Progress')) {
-            dom.addClass(languagesBlock, 'col-md-12');
-            dom.removeClass(languagesBlock, 'BorderGrid-row');
-
-            dom.addClass(languagesBlock.children[0], 'col-md-12');
-            dom.removeClass(languagesBlock.children[0], 'BorderGrid-cell');
-        }
 
     } else {
         console.log('not found')
