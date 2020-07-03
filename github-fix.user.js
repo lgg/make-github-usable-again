@@ -12,11 +12,33 @@
     'use strict';
 
     const dom = {
+        getArrayFromNodeList: function (nodeList) {
+            if (NodeList.prototype.isPrototypeOf(nodeList)) {
+                return Array.from(nodeList);
+            }
+
+            if (Array.isArray(nodeList)) {
+                return nodeList;
+            }
+
+            return [nodeList]
+        },
+        callForAll: function (elements, func) {
+            for (let i = 0; i < elements.length; i++) {
+                func(elements[i], i);
+            }
+        },
         getById: (id) => {
             return document.getElementById(id);
         },
         getByClass: (className) => {
             return document.getElementsByClassName(className);
+        },
+        hide: function (el) {
+            el = this.getArrayFromNodeList(el);
+            el.forEach((currentEl) => {
+                this.addStyle(currentEl, 'display: none !important;')
+            });
         },
         addClass: (el, className) => {
             className = className.split(' ');
@@ -44,7 +66,7 @@
         getStyle: (el) => {
             return el.getAttribute('style');
         },
-        addStyle: (el, css) => {
+        addStyle: function (el, css) {
             css = this.getStyle(el) + '; ' + css;
             el.setAttribute('style', css);
         },
