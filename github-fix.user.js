@@ -78,6 +78,41 @@
         }
     };
 
+    // github markup related functions
+    const github = {
+        getHeaderBlockTitle: (parent) => {
+            try {
+                const blockTitles = parent.querySelectorAll('h2');
+
+                // check if it have title block (not empty block or not hidden block)
+                if (blockTitles.length === 0) {
+                    return false;
+                }
+                const blockTitle = blockTitles[0];
+
+                // check if title is not a link
+                if (blockTitle.children.length === 0) {
+                    return blockTitle.textContent.trim();
+                }
+
+                // get block title links
+                const titleLinks = blockTitle.querySelectorAll('a');
+                if (titleLinks.length === 0) {
+                    // something go wrong
+                    return false;
+                }
+
+                const titleLink = titleLinks[0];
+                return titleLink.childNodes[0].nodeValue.trim();
+            } catch (e) {
+                return false;
+            }
+        },
+        hideTitleBlock: function (el) {
+            dom.hide(el.querySelectorAll('h2'));
+        }
+    };
+
     //repository-content
 
     if (dom.getByClass('repository-content').length > 0 && dom.getById('readme')) {
